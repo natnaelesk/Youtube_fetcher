@@ -1,4 +1,4 @@
-app = "app-winter-sky-1316"
+app = "youtube-fetcher"
 primary_region = "iad"
 
 [build]
