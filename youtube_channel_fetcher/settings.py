@@ -154,7 +154,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://youtube-fetcher.vercel.app",  # Add Vercel frontend domain
+    "https://youtube-fetcher.vercel.app",  # Vercel frontend domain
 ]
 
 # Add Vercel domain from environment variable if set
@@ -175,6 +175,28 @@ if frontend_url:
         CORS_ALLOWED_ORIGINS.append(frontend_url)
 
 CORS_ALLOW_CREDENTIALS = True
+
+# Allow all methods and headers for API
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # YouTube API Configuration
 YOUTUBE_API_KEY = os.getenv('YOUTUBE_API_KEY', '')
