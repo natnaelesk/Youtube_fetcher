@@ -24,7 +24,14 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-producti
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Update ALLOWED_HOSTS from environment variable (comma-separated)
-ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0').split(',')
+# Also automatically add *.fly.dev domains
+allowed_hosts = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0').split(',')
+# Add fly.dev domain if not already present
+if 'youtube-fetcher.fly.dev' not in allowed_hosts:
+    allowed_hosts.append('youtube-fetcher.fly.dev')
+# Allow any *.fly.dev subdomain
+allowed_hosts.append('*.fly.dev')
+ALLOWED_HOSTS = allowed_hosts
 
 
 # Application definition
@@ -149,6 +156,7 @@ REST_FRAMEWORK = {
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
+    "https://youtube-fetcher.vercel.app",  # Add Vercel frontend domain
 ]
 
 # Add Vercel domain from environment variable if set
@@ -157,12 +165,16 @@ if vercel_url:
     # Vercel provides URL without protocol, add https://
     if not vercel_url.startswith('http'):
         vercel_url = f"https://{vercel_url}"
-    CORS_ALLOWED_ORIGINS.append(vercel_url)
+    if vercel_url not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(vercel_url)
 
 # Also allow manual addition via environment variable
 frontend_url = os.getenv('FRONTEND_URL')
-if frontend_url and frontend_url not in CORS_ALLOWED_ORIGINS:
-    CORS_ALLOWED_ORIGINS.append(frontend_url)
+if frontend_url:
+    if not frontend_url.startswith('http'):
+        frontend_url = f"https://{frontend_url}"
+    if frontend_url not in CORS_ALLOWED_ORIGINS:
+        CORS_ALLOWED_ORIGINS.append(frontend_url)
 
 CORS_ALLOW_CREDENTIALS = True
 
