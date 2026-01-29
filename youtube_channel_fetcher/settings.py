@@ -24,13 +24,11 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-dev-key-change-in-producti
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 # Update ALLOWED_HOSTS from environment variable (comma-separated)
-# Also automatically add *.fly.dev domains
+# Also automatically add youtube-fetcher.fly.dev domain
 allowed_hosts = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1,0.0.0.0').split(',')
 # Add fly.dev domain if not already present
 if 'youtube-fetcher.fly.dev' not in allowed_hosts:
     allowed_hosts.append('youtube-fetcher.fly.dev')
-# Allow any *.fly.dev subdomain
-allowed_hosts.append('*.fly.dev')
 ALLOWED_HOSTS = allowed_hosts
 
 
