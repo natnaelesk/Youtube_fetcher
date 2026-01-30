@@ -1,7 +1,3 @@
-/**
- * Home page component with channel URL input form.
- */
-
 import React, { useState } from 'react';
 import { useChannelVideos } from '../hooks/useChannelVideos';
 import { normalizeChannelUrl, isValidChannelInput } from '../utils/urlNormalizer';
@@ -25,7 +21,6 @@ const HomePage = () => {
     reset();
   };
 
-  // Show results if data is available
   if (data) {
     const normalizedUrl = channelUrl.trim() ? normalizeChannelUrl(channelUrl.trim()) : '';
     return (

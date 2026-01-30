@@ -1,7 +1,3 @@
-/**
- * Custom hook for fetching channel videos with pagination.
- */
-
 import { useState } from 'react';
 import { fetchChannelVideos } from '../services/api';
 
@@ -13,12 +9,10 @@ export const useChannelVideos = () => {
 
   const fetchVideos = async (channelUrl, limit = 500, offset = 0) => {
     if (offset === 0) {
-      // Initial fetch
       setLoading(true);
       setError(null);
       setData(null);
     } else {
-      // Loading more
       setLoadingMore(true);
     }
 
@@ -26,10 +20,8 @@ export const useChannelVideos = () => {
       const result = await fetchChannelVideos(channelUrl, limit, offset);
       
       if (offset === 0) {
-        // Initial fetch - replace data
         setData(result);
       } else {
-        // Loading more - append videos
         setData(prevData => ({
           ...result,
           videos: [...(prevData?.videos || []), ...result.videos],
@@ -68,4 +60,3 @@ export const useChannelVideos = () => {
     reset,
   };
 };
-

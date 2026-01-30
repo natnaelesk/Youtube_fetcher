@@ -1,7 +1,3 @@
-"""
-API views for video fetching.
-"""
-
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -13,9 +9,6 @@ from videos.services.youtube_service import YouTubeService, YouTubeServiceError
 
 
 def custom_exception_handler(exc, context):
-    """
-    Custom exception handler for API errors.
-    """
     from rest_framework.views import exception_handler
     
     response = exception_handler(exc, context)
@@ -33,29 +26,6 @@ def custom_exception_handler(exc, context):
 
 @api_view(['POST'])
 def fetch_channel_videos(request):
-    """
-    Fetch videos from a YouTube channel with pagination support.
-    
-    POST /api/channel/videos/
-    
-    Request body:
-    {
-        "channel_url": "https://www.youtube.com/@channelname",
-        "limit": 500,  # Optional: number of videos to fetch (default: 500)
-        "offset": 0    # Optional: offset for pagination (default: 0)
-    }
-    
-    Response:
-    {
-        "channel_title": "Channel Name",
-        "channel_id": "UC...",
-        "total_videos": 1000,
-        "videos": [...],  # Limited to 'limit' videos
-        "has_more": true,  # Whether more videos are available
-        "next_offset": 500  # Next offset for pagination
-    }
-    """
-    # Validate request data
     serializer = ChannelVideosRequestSerializer(data=request.data)
     if not serializer.is_valid():
         return Response(
@@ -69,28 +39,22 @@ def fetch_channel_videos(request):
         )
     
     channel_url = serializer.validated_data['channel_url']
-    limit = request.data.get('limit', 500)  # Default to 500 videos per request
+    limit = request.data.get('limit', 500)
     offset = request.data.get('offset', 0)
     
-    # Validate limit
     if limit > 1000:
-        limit = 1000  # Cap at 1000 for performance
+        limit = 1000
     if limit < 1:
         limit = 500
     
     try:
-        # Fetch videos using YouTube service
         youtube_service = YouTubeService()
         result = youtube_service.fetch_channel_videos(channel_url, limit=limit, offset=offset)
-        
-        # Serialize response
         response_serializer = ChannelVideosResponseSerializer(result)
-        
         return Response(response_serializer.data, status=status.HTTP_200_OK)
     
     except YouTubeServiceError as e:
         error_message = str(e)
-        # Make error messages more user-friendly
         if 'quota exceeded' in error_message.lower():
             error_message = 'YouTube API quota exceeded. Please try again later or check your API key limits.'
         elif 'not found' in error_message.lower():
@@ -116,4 +80,3 @@ def fetch_channel_videos(request):
             },
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
-

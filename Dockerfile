@@ -23,3 +23,4 @@ EXPOSE 8000
 # Run migrations and start server
 CMD python manage.py migrate && gunicorn youtube_channel_fetcher.wsgi --bind 0.0.0.0:8000
 
+
